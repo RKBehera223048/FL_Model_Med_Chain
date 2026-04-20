@@ -1,4 +1,4 @@
-# MedChain-FL — Privacy-Preserving AI for Indian Healthcare
+# MedChain-FL — Privacy-Preserving AI for Healthcare
 
 <div align="center">
 
@@ -9,9 +9,8 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-**A Data-Collaboration-as-a-Service platform enabling privacy-preserving AI for Indian Healthcare via Federated Learning.**
+**A Data-Collaboration-as-a-Service platform enabling privacy-preserving AI for Healthcare via Federated Learning.**
 
-*Detect Thalassemia and chronic blood disorders without exposing raw patient data.*
 
 </div>
 
@@ -147,13 +146,3 @@ The backend auto-seeds on first startup:
 - **5 Hospitals**: AIIMS Delhi, CMC Vellore, PGIMER Chandigarh, KEM Mumbai, NIMHANS Bangalore
 - **7 FL Training Rounds**: With progressively improving accuracy (80% → 93%)
 - **Compute Credits**: Distributed across participating hospitals
-
-## 📄 License
-
-This project is built for educational and research purposes. Not intended for clinical use without proper validation and regulatory approval.
-
----
-
-<div align="center">
-  <b>Built with ❤️ for Indian Healthcare</b>
-</div>
