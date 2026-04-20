@@ -1,0 +1,80 @@
+version: "3.9"
+
+services:
+  # ─── PostgreSQL Database ───
+  db:
+    image: postgres:15-alpine
+    container_name: medchain-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-medchain}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-medchain_secure_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-medchain_fl}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medchain -d medchain_fl"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── FastAPI Global Server ───
+  global_server:
+    build: ./backend
+    container_name: medchain-global-server
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-medchain}:${POSTGRES_PASSWORD:-medchain_secure_2026}@db:5432/${POSTGRES_DB:-medchain_fl}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - uploads_data:/app/uploads
+
+  # ─── Next.js Frontend ───
+  frontend:
+    build: ./frontend
+    container_name: medchain-frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - global_server
+
+  # ─── FL Worker Node 1 (Hospital Simulator) ───
+  fl_worker_1:
+    build: ./fl_worker
+    container_name: medchain-fl-worker-1
+    restart: unless-stopped
+    environment:
+      GLOBAL_SERVER_URL: http://global_server:8000
+      HOSPITAL_CODE: AIIMS-DEL
+      HOSPITAL_NAME: "AIIMS New Delhi - FL Node"
+      POLL_INTERVAL: "45"
+    depends_on:
+      - global_server
+
+  # ─── FL Worker Node 2 (Hospital Simulator) ───
+  fl_worker_2:
+    build: ./fl_worker
+    container_name: medchain-fl-worker-2
+    restart: unless-stopped
+    environment:
+      GLOBAL_SERVER_URL: http://global_server:8000
+      HOSPITAL_CODE: CMC-VLR
+      HOSPITAL_NAME: "CMC Vellore - FL Node"
+      POLL_INTERVAL: "60"
+    depends_on:
+      - global_server
+
+volumes:
+  postgres_data:
+  uploads_data:

@@ -1,0 +1,2 @@
+# Minimal requirements for FL Worker
+requests==2.32.3
